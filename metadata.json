@@ -1,0 +1,6 @@
+{
+  "name": "INFORMA JUANDA MEDAN - Dashboard Penjualan Real-Time",
+  "description": "Dashboard pemantauan data penjualan real-time Informa Juanda Medan dengan visualisasi speedometer target MTD, kontribusi 20 departemen, evaluasi SMT & insentif, integrasi Google Sheets, serta ekspor PDF/Excel.",
+  "requestFramePermissions": ["notifications"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
