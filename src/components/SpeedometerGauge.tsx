@@ -112,7 +112,7 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
 
         <h2 className="text-base sm:text-lg font-extrabold tracking-tight text-white flex items-center gap-2 drop-shadow-sm">
           <Target className="w-4 h-4 text-[#FFD700]" />
-          Pencapaian MTD Store
+          Pencapaian {viewMode === 'mtd' ? 'MTD Store' : 'Target Harian Store'}
         </h2>
       </div>
 
@@ -251,9 +251,17 @@ export const SpeedometerGauge: React.FC<SpeedometerGaugeProps> = ({
               {isAchieved ? '✓ Achievement Store' : formatRupiah(currentKekurangan)}
             </span>
           </div>
-          <span className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md bg-slate-950/70 border border-cyan-500/30 text-cyan-200 shadow-inner">
-            {summary.daysElapsed}/{summary.daysInMonth} Hari
-          </span>
+          <div className="text-right flex flex-col items-end">
+            <span
+              className="text-[10px] font-mono font-semibold px-2 py-0.5 rounded-md bg-slate-950/70 border border-cyan-500/30 text-cyan-200 shadow-inner"
+              title={`Bulan ${summary.monthName} ${summary.year}: Hari ke-${summary.daysElapsed} dari total ${summary.daysInMonth} hari berjalan (Sisa ${summary.daysRemaining} hari)`}
+            >
+              Hari ke-{summary.daysElapsed}/{summary.daysInMonth}
+            </span>
+            <span className="text-[9px] text-slate-400 font-mono mt-0.5">
+              Sisa {summary.daysRemaining} Hari
+            </span>
+          </div>
         </div>
       </div>
     </div>

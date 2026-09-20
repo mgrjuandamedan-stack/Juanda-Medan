@@ -202,6 +202,76 @@ export function computeSMTMetrics(smt: SMTPerformance): ComputedSMT {
 }
 
 /**
+ * Get comprehensive running date information based on current date (WIB / Asia/Jakarta).
+ */
+export function getRunningDateInfo(refDate?: Date | string) {
+  const date = refDate ? new Date(refDate) : new Date();
+
+  const dayNames = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+  const monthNames = [
+    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+  ];
+
+  let dayOfWeek = date.getDay();
+  let dayNumber = date.getDate();
+  let monthIndex = date.getMonth();
+  let year = date.getFullYear();
+
+  try {
+    const formatter = new Intl.DateTimeFormat('id-ID', {
+      timeZone: 'Asia/Jakarta',
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+    const parts = formatter.formatToParts(date);
+    const partObj: Record<string, string> = {};
+    parts.forEach((p) => {
+      partObj[p.type] = p.value;
+    });
+
+    if (partObj.day) dayNumber = parseInt(partObj.day, 10);
+    if (partObj.year) year = parseInt(partObj.year, 10);
+    if (partObj.weekday) {
+      const idx = dayNames.findIndex((d) => d.toLowerCase() === partObj.weekday.toLowerCase());
+      if (idx !== -1) dayOfWeek = idx;
+    }
+    if (partObj.month) {
+      const mIdx = monthNames.findIndex((m) => m.toLowerCase() === partObj.month.toLowerCase());
+      if (mIdx !== -1) monthIndex = mIdx;
+    }
+  } catch (e) {
+    // fallback to local date properties
+  }
+
+  const dayName = dayNames[dayOfWeek] || 'Hari';
+  const monthName = monthNames[monthIndex] || 'Bulan';
+  const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
+  const daysElapsed = Math.min(dayNumber, daysInMonth);
+  const daysRemaining = Math.max(0, daysInMonth - daysElapsed);
+
+  // Full date with day name: e.g. "Minggu, 20 September 2026"
+  const formattedFull = `${dayName}, ${dayNumber} ${monthName} ${year}`;
+  // Short date: e.g. "20 September 2026"
+  const formattedShort = `${dayNumber} ${monthName} ${year}`;
+
+  return {
+    dayName,
+    dayNumber,
+    monthName,
+    monthIndex,
+    year,
+    daysInMonth,
+    daysElapsed,
+    daysRemaining,
+    formattedFull,
+    formattedShort,
+  };
+}
+
+/**
  * Compute overall store summary
  */
 export function computeStoreSummary(
@@ -227,19 +297,19 @@ export function computeStoreSummary(
   const totalPolis = smts.reduce((acc, s) => acc + (s.polis || 0), 0);
   const totalQualifiedSMT = smts.filter((s) => s.isInsentifQualified).length;
 
-  const today = new Date();
-  const monthNames = [
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-    'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-  ];
+  const dateInfo = getRunningDateInfo();
 
   return {
     storeName: 'INFORMA JUANDA MEDAN',
     branchCode: 'INF-JMD-042',
     location: 'Jl. Ir. H. Juanda No. 36, Medan, Sumatera Utara',
-    currentDate: `${today.getDate()} ${monthNames[today.getMonth()]} ${today.getFullYear()}`,
-    monthName: monthNames[today.getMonth()],
-    year: today.getFullYear(),
+    currentDate: dateInfo.formattedFull,
+    dayName: dateInfo.dayName,
+    monthName: dateInfo.monthName,
+    year: dateInfo.year,
+    daysElapsed: dateInfo.daysElapsed,
+    daysInMonth: dateInfo.daysInMonth,
+    daysRemaining: dateInfo.daysRemaining,
     totalTargetMTD,
     totalActualMTD,
     kekuranganMTD,

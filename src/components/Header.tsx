@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FileSpreadsheet, FileDown, Database, RefreshCw, Radio, 
-  Sparkles, Clock, MapPin, Store, Bell, Check, ShieldCheck, Play, Pause, FileText
+  Sparkles, Clock, MapPin, Store, Bell, Check, ShieldCheck, Play, Pause, FileText, Calendar
 } from 'lucide-react';
 import { StoreSummary, GoogleSheetsConfig } from '../types';
 
@@ -80,22 +80,30 @@ export const Header: React.FC<HeaderProps> = ({
             <h1 className="text-lg sm:text-xl font-extrabold tracking-tight text-white uppercase drop-shadow-sm">
               INFORMA JUANDA MEDAN
             </h1>
-            <p className="text-[10px] text-cyan-300/70 font-medium uppercase tracking-widest hidden sm:block">
-              Sales Monitoring System • Live Pos Update
-            </p>
+            <div className="flex items-center gap-2 flex-wrap text-[11px] font-medium text-cyan-200/90 mt-0.5">
+              <span className="flex items-center gap-1.5 text-slate-100">
+                <Calendar className="w-3.5 h-3.5 text-[#FFD700] shrink-0" />
+                <span className="font-semibold text-white drop-shadow-sm">{summary.currentDate}</span>
+              </span>
+              <span className="text-cyan-500/40 hidden sm:inline">•</span>
+              <span className="text-[10px] text-cyan-300/80 font-mono hidden sm:inline">
+                Hari ke-{summary.daysElapsed} dari {summary.daysInMonth} ({summary.monthName} {summary.year})
+              </span>
+            </div>
           </div>
         </div>
 
         {/* Right: Actions Bar */}
         <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
-          {/* Real-time Clock Info */}
-          <div className="hidden lg:flex flex-col items-end mr-1 text-right">
+          {/* Real-time Clock Info & Running Date */}
+          <div className="flex flex-col items-end mr-1 text-right bg-slate-900/60 border border-cyan-500/30 px-2.5 py-1 rounded-xl shadow-inner">
             <span className="text-xs font-mono font-bold text-cyan-200 flex items-center gap-1 drop-shadow-sm">
               <Clock className="w-3.5 h-3.5 text-[#FFD700]" />
               {timeString}
             </span>
-            <span className="text-[10px] text-slate-300 font-medium">
-              {summary.currentDate}
+            <span className="text-[9px] text-emerald-300 font-semibold flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping inline-block" />
+              <span>Tanggal Berjalan Aktif</span>
             </span>
           </div>
 

@@ -54,8 +54,12 @@ export interface StoreSummary {
   branchCode: string;
   location: string;
   currentDate: string;
+  dayName: string;
   monthName: string;
   year: number;
+  daysElapsed: number;
+  daysInMonth: number;
+  daysRemaining: number;
   totalTargetMTD: number;
   totalActualMTD: number;
   kekuranganMTD: number;

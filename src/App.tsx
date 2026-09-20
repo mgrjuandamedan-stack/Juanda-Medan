@@ -106,6 +106,16 @@ export default function App() {
     };
   });
 
+  // Live running date ticker (advances automatically every 30 seconds)
+  const [runningDateTick, setRunningDateTick] = useState(() => Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setRunningDateTick(Date.now());
+    }, 30000);
+    return () => clearInterval(timer);
+  }, []);
+
   // Modal states
   const [isSheetsModalOpen, setIsSheetsModalOpen] = useState(false);
   const [editingSMT, setEditingSMT] = useState<SMTPerformance | null>(null);
@@ -160,7 +170,14 @@ export default function App() {
       ...customSummary,
       branchCode: customSummary.branchCode || base.branchCode,
       location: customSummary.location || base.location,
-      currentDate: customSummary.currentDate || base.currentDate,
+      // Always guarantee current running date (tanggal berjalan) & day counts
+      currentDate: base.currentDate,
+      dayName: base.dayName,
+      monthName: base.monthName,
+      year: base.year,
+      daysElapsed: base.daysElapsed,
+      daysInMonth: base.daysInMonth,
+      daysRemaining: base.daysRemaining,
       totalTargetMTD,
       totalActualMTD,
       kekuranganMTD,
@@ -173,7 +190,7 @@ export default function App() {
       totalPolis: customSummary.totalPolis ?? base.totalPolis,
       totalQualifiedSMT: customSummary.totalQualifiedSMT ?? base.totalQualifiedSMT,
     };
-  }, [computedDepartments, computedSMTs, customSummary]);
+  }, [computedDepartments, computedSMTs, customSummary, runningDateTick]);
 
   // Helper to add a notification
   const addNotification = useCallback((title: string, message: string, type: 'achievement' | 'milestone' | 'warning' | 'info' = 'info') => {
